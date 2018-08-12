@@ -57,6 +57,15 @@ $pic=json_decode($result);
     <link rel="stylesheet" href="css/style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script>
+    function openNewWindow(accesstoken,id)
+    {
+        alert(accesstoken+id);
+        str="imageslideshow.php?token="+accesstoken+"&id="+id;
+        window.open(str, "_blank","height=340px width=600px");
+
+    }
+    </script>
     </head>
     <body>
     <nav class="navbar navbar-default">
@@ -94,7 +103,7 @@ $pic=json_decode($result);
                                         <h4 style="margin-left:10px;"><?php echo $mydata->name; ?></h4>
                                         <div id="buttongrp">
                                             <center>
-                                             <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-eye-open "></span><span class="btntext" style="margin-left:5px;">View</span></button>
+                                                <?php echo "<a href= '#' onClick= openNewWindow('$access_token','$mydata->id');>" ?><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-eye-open "></span><span class="btntext" style="margin-left:5px;">View</span></button></a>
                                             <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-save"></span><span class="btntext" style="margin-left:5px;">downloud</span></button>  
                                             <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-share"></span><span class="btntext" style="margin-left:5px;">Share</span></button>
 
