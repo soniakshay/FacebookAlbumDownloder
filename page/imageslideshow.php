@@ -1,6 +1,7 @@
 <?php
 require_once '../vendor/autoload.php'; // change path as needed
 session_start();
+error_reporting(0);
 if(isset($_GET['state'])) {
     
     $_SESSION['FBRLH_state'] = $_GET['state'];
@@ -18,123 +19,16 @@ $albumid=$_GET["id"];
 $url1="https://graph.facebook.com/v3.1/me?fields=photos%7Bimages%2Calbum%7D&access_token=".$access_token;
 $result = file_get_contents($url1);
 $pic=json_decode($result);
-?>
-<!DOCTYPE html>
-<html>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-body {
-  font-family: Arial;
-  margin: 0;
+$url1="https://graph.facebook.com/v3.1/".$albumid."/photos?fields=images%2Calbum&access_token=".$access_token;
+$result = file_get_contents($url1);
+$pic=json_decode($result);
+$existphotokey=(array)$pic;
+$a=(array)$pic->paging;
+$abc=array();  
+if(array_key_exists("next",$a))
+{
+        $url1=$a["next"];
 }
-
-* {
-  box-sizing: border-box;
-}
-
-img {
-  vertical-align: middle;
-}
-
-/* Position the image container (needed to position the left and right arrows) */
-.container {
-  position: relative;
-}
-
-/* Hide the images by default */
-.mySlides {
-  display: none;
-}
-
-/* Add a pointer when hovering over the thumbnail images */
-.cursor {
-  cursor: pointer;
-}
-
-/* Next & previous buttons */
-.prev,
-.next {
-  cursor: pointer;
-  position: absolute;
-  top: 40%;
-  width: auto;
-  padding: 16px;
-  margin-top: -50px;
-  color: white;
-  font-weight: bold;
-  font-size: 20px;
-  border-radius: 0 3px 3px 0;
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-/* Position the "next button" to the right */
-.next {
-  right: 0;
-  border-radius: 3px 0 0 3px;
-}
-
-/* On hover, add a black background color with a little bit see-through */
-.prev:hover,
-.next:hover {
-  background-color: rgba(0, 0, 0, 0.8);
-}
-
-/* Number text (1/3 etc) */
-.numbertext {
-  color: #f2f2f2;
-  font-size: 12px;
-  padding: 8px 12px;
-  position: absolute;
-  top: 0;
-}
-
-/* Container for image text */
-.caption-container {
-  text-align: center;
-  background-color: #222;
-  padding: 2px 16px;
-  color: white;
-}
-
-.row:after {
-  content: "";
-  display: table;
-  clear: both;
-}
-
-/* Six columns side by side */
-.column {
-  float: left;
-  width: 16.66%;
-}
-
-/* Add a transparency effect for thumnbail images */
-.demo {
-  opacity: 0.6;
-}
-
-.active,
-.demo:hover {
-  opacity: 1;
-}
-</style>
-<body>
-<div class="container">
-  <a class="prev" onclick="plusSlides(-1)">❮</a>
-  <a class="next" onclick="plusSlides(1)">❯</a>
-  
-
-    <?php
-        $url1="https://graph.facebook.com/v3.1/".$albumid."/photos?fields=images%2Calbum&access_token=".$access_token;
-        $result = file_get_contents($url1);
-        $pic=json_decode($result);
-        $existphotokey=(array)$pic;
-        $a=(array)$pic->paging;
-        if(array_key_exists("next",$a))
-        {
-            $url1=$a["next"];
-        }
 
         do
         {            
@@ -148,13 +42,10 @@ img {
                 }
                 foreach($pic->data as $mydata)
                 {
-                ?>
-                            <div class="mySlides">
-                                 <div class="numbertext">1 / 6</div>
-                                <center> <?php echo "<img src='".$mydata->images[1]->source."' class='img-responsive' style='height:350px;'> ";?></center>
-                            </div>
-                <?php
-                            
+
+                    $str=$mydata->images[1]->source;
+                    
+                    $abc[]=$str;
                         
                 }
                 if($url1!="none")
@@ -167,42 +58,74 @@ img {
 
         
         }while($url1!="none");
-        
-                    
-?>
-
     
-
+        
+?>
+<!DOCTYPE html>
+<html>
+<head>
+    
+<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Facebook Album Downloder</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        
 <script>
-var slideIndex = 1;
-showSlides(slideIndex);
-
-function plusSlides(n) {
-  showSlides(slideIndex += n);
+var link = new Array();
+    <?php 
+            foreach($abc as $val)
+            { 
+    ?>
+                link.push('<?php echo $val; ?>');
+    <?php 
+            } 
+    ?>
+i=0;
+function abc()
+{
+	document.getElementById("img").src = link[i];
 }
+len=link.length-1;
+function  next()
+{
+	if(i >=len)
+	{
+		i=0;
+	}
+	else
+	{
+		i++;
+	}
+	document.getElementById("img").src = link[i];
 
-function currentSlide(n) {
-  showSlides(slideIndex = n);
 }
+function previous()
+{
+	if(i <= 0)
+	{
+		i=len;
+	}
+	else
+	{
+		i--;
+	}
+	
+	document.getElementById("img").src = link[i];
 
-function showSlides(n) {
-  var i;
-  var slides = document.getElementsByClassName("mySlides");
-  var dots = document.getElementsByClassName("demo");
-  var captionText = document.getElementById("caption");
-  if (n > slides.length) {slideIndex = 1}
-  if (n < 1) {slideIndex = slides.length}
-  for (i = 0; i < slides.length; i++) {
-      slides[i].style.display = "none";
-  }
-  for (i = 0; i < dots.length; i++) {
-      dots[i].className = dots[i].className.replace(" active", "");
-  }
-  slides[slideIndex-1].style.display = "block";
-  dots[slideIndex-1].className += " active";
-  captionText.innerHTML = dots[slideIndex-1].alt;
 }
 </script>
-    
+</head>
+    <body onload="abc()">
+    <button onclick="previous()" class="slidenavbtn"><</button>
+	<button onclick="next()" class="slidenavbtn" style="left:90%;">></button>
+
+    <div class="container">
+        <img src="" id="img"  style="height:340px;" class="img-responsive"  altr="Failed Image Loading.."/>
+    </div>
+
 </body>
 </html>

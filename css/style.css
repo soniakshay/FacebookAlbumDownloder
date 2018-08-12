@@ -30,6 +30,15 @@ html,body
     margin-left:40%;
     margin-top: 10%;
 }
+.slidenavbtn
+{
+    position: fixed;
+    background:rgba(0,0,0,0.5);
+    color:white;
+    font-size:50px;
+    width:10%;
+    top:30%;
+}
 @media screen and (max-width: 600px) {
      #loginbox
     {
