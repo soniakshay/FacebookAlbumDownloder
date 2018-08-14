@@ -39,6 +39,16 @@ html,body
     width:10%;
     top:30%;
 }
+#demo
+{
+    display:none;
+}
+
+
+#lodingdiv
+{
+    display:none;
+}
 @media screen and (max-width: 600px) {
      #loginbox
     {

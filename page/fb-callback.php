@@ -1,12 +1,10 @@
 <?php
-
 require_once '../vendor/autoload.php';
 session_start();
 if(isset($_GET['state'])) {
     $_SESSION['FBRLH_state'] = $_GET['state'];
 }
 require_once '../config/config.php';    
-
 $helper = $fb->getRedirectLoginHelper();
 
 try {
@@ -62,7 +60,6 @@ if (! $accessToken->isLongLived()) {
     exit;
   }
 
-  echo '<h3>Long-lived</h3>';
 
 }
 
