@@ -50,6 +50,7 @@ $pic=json_decode($result);
 
 			}
 			function createzip(id) {
+                alert(id);
                 document.getElementById("lodingdiv").style.display="block";
                 document.getElementById("sts").style.display="block";
                 document.getElementById("demo").style.display="none";
@@ -57,10 +58,18 @@ $pic=json_decode($result);
                 var xhttp = new XMLHttpRequest();
 				xhttp.onreadystatechange = function() {
 				if (this.readyState == 4 && this.status == 200) {
-                    document.getElementById("sts").style.display="none";
-                    document.getElementById("demo").style.display="block";
-                    document.getElementById("demo").href=this.responseText; 
-                  
+                    if(this.responseText!="false")
+                    {
+                        document.getElementById("sts").style.display="none";
+                        document.getElementById("demo").style.display="block";
+                        document.getElementById("demo").href=this.responseText; 
+                        alert(this.responseText);
+                    }
+                    else
+                    {
+                            document.getElementById("sts").innerHTML="Something Error";
+                    
+                    }
                 }
 			  };
 				xhttp.open("GET", "createalbumzip.php?albumid=" + id, true);
