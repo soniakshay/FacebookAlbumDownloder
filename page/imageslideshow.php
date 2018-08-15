@@ -111,7 +111,7 @@ if(array_key_exists("next",$a))
 	</script>
 </head>
     <body onload="abc()">
-    <button onclick="previous()" class="slidenavbtn"></button>
+    <button onclick="previous()" class="slidenavbtn"><</button>
 	<button onclick="next()" class="slidenavbtn" style="left:90%;">></button>
 	<div class="container">
         <center><img src="" id="img"  style="height:340px;" class="img-responsive"  altr="Failed Image Loading.."/></center>
