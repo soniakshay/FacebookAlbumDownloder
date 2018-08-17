@@ -32,6 +32,8 @@ $loginUrl = $helper->getLoginUrl('https://localhost/FacebookAlbumDownloder/page/
 			<!-- Header-->
 			<div id="header">
                         <div class="container">
+                            <center><h1 style="color:white;"><strong>Facebook Album Downloder</strong></h1></center>
+            
                             <div id="loginbox" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                 <div id="buttondiv">
                                 <?php

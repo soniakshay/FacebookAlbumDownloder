@@ -95,7 +95,7 @@ if(array_key_exists("next",$a))
 			document.getElementById("img").src = link[i];
         
 		}
-        setInterval(next,3000);
+      //  setInterval(next,3000);
 		function previous()
 		{
 			if(i <= 0)

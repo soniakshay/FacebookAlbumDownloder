@@ -1,6 +1,6 @@
 <?php
     require_once '../vendor/autoload.php'; // change path as needed
-    session_start();
+	session_start();
     if(isset($_GET['state'])) {
 
         $_SESSION['FBRLH_state'] = $_GET['state'];
@@ -177,7 +177,7 @@
                                             <center>
                                             <?php echo "<a href= '#' onClick= openNewWindow('$access_token','$mydata->id');>" ?><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-eye-open "></span><span class="btntext" style="margin-left:5px;">View</span></button></a>
                                             <button type="button" class="btn btn-default" onclick="createzip(<?php echo $mydata->id; ?>)"><span class="glyphicon glyphicon-save"></span><span class="btntext" style="margin-left:5px;">downloud</span></button>  
-                                            <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-share"></span><span class="btntext" style="margin-left:5px;">Share</span></button>
+                                             <a href="uplodegoogledrive.php?albumid=<?php echo $mydata->id;?>" ><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-share"></span><span class="btntext" style="margin-left:5px;">Share</span></button></a>
                                             
                                         </div>    
                                     </div>

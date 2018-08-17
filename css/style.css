@@ -20,9 +20,10 @@ html,body
 }
 #loginbox
 {
-    background: white;
+    background:white;
     height:100%;
-    margin-top: 15%;     
+    margin-top:10% ; 
+	box-shadow:0px 0px 10px 1px;
 }
 
 #buttondiv
@@ -53,7 +54,7 @@ html,body
 @media screen and (max-width: 600px) {
      #loginbox
     {
-        margin-top: 50%;     
+        margin-top: 20%;     
     }
     
 #buttondiv
