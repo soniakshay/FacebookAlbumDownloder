@@ -2,7 +2,10 @@
 require_once 'vendor/autoload.php';
 
 session_start();
-
+if(isset($_SESSION['fb_access_token'] ))
+{
+    header('Location:page/home.php');
+}
 if(isset($_GET['state'])) {
     $_SESSION['FBRLH_state'] = $_GET['state'];
 }

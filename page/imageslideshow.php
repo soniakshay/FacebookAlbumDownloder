@@ -18,7 +18,7 @@ $pic=json_decode($result);
 
 //paging 
 $a=(array)$pic->paging;
-$abc=array();  
+$imagelinksarray=array();  
 if(array_key_exists("next",$a))
 {
         $url1=$a["next"];
@@ -39,7 +39,7 @@ if(array_key_exists("next",$a))
 
                     $str=$mydata->images[1]->source;
                     
-                    $abc[]=$str;
+                    $imagelinksarray[]=$str;
                         
                 }
                 if($url1!="none")
@@ -69,7 +69,7 @@ if(array_key_exists("next",$a))
     <script>
 		var link = new Array();
 		<?php 
-				foreach($abc as $val)
+				foreach($imagelinksarray as $val)
 				{ 
 		?>
 					link.push('<?php echo $val; ?>');
@@ -77,7 +77,7 @@ if(array_key_exists("next",$a))
 				} 
 		?>
 		i=0;
-		function abc()
+		function onloadimage()
 		{
 			document.getElementById("img").src = link[i];
 		}
@@ -110,7 +110,7 @@ if(array_key_exists("next",$a))
 		}
 	</script>
 </head>
-    <body onload="abc()">
+    <body onload="onloadimage()">
     <button onclick="previous()" class="slidenavbtn"><</button>
 	<button onclick="next()" class="slidenavbtn" style="left:90%;">></button>
 	<div class="container">
