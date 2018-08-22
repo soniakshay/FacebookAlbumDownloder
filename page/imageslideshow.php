@@ -1,5 +1,5 @@
 <?php
-require_once '../vendor/facebook/autoload.php'; // change path as needed
+require_once '../vendor/autoload.php'; // change path as needed
 session_start();
 error_reporting(0);
 if(isset($_GET['state'])) {
@@ -57,39 +57,64 @@ if(array_key_exists("next",$a))
 ?>
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>Facebook Album Downloader</title>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-		<link rel="stylesheet" href="../assets/css/style.css">
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-		<script>
-			//all imageUrl store php Array to javascript Array
-			
-			var link = new Array();
-			<?php 
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Facebook Album Downloder</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script>
+		var link = new Array();
+		<?php 
 				foreach($imagelinksarray as $val)
 				{ 
-			?>
+		?>
 					link.push('<?php echo $val; ?>');
-			<?php 
+		<?php 
 				} 
-			?>
-		</script>
-		<script src="../assets/js/slideshow.js"></script>
-	</head>
+		?>
+		i=0;
+		function onloadimage()
+		{
+			document.getElementById("img").src = link[i];
+		}
+		len=link.length-1;
+		function  next()	
+		{	
+			if(i >=len)
+			{
+				i=0;
+			}
+			else
+			{
+				i++;
+			}	
+			document.getElementById("img").src = link[i];
+        
+		}
+      //  setInterval(next,3000);
+		function previous()
+		{
+			if(i <= 0)
+			{
+				i=len;
+			}
+			else
+			{
+				i--;
+			}
+			document.getElementById("img").src = link[i];
+		}
+	</script>
+</head>
     <body onload="onloadimage()">
-		<!--navigation button-->
-		<button onclick="previous()" class="slidenavbtn"><</button>
-		<button onclick="next()" class="slidenavbtn" style="left:90%;">></button>
-		
-		<!-- image url holder-->
-		<div class="container">
-			<center><img src="" id="img"  style="height:340px;" class="img-responsive"  altr="Failed Image Loading.."/></center>
-		</div>
-		
-	</body>
+    <button onclick="previous()" class="slidenavbtn"><</button>
+	<button onclick="next()" class="slidenavbtn" style="left:90%;">></button>
+	<div class="container">
+        <center><img src="" id="img"  style="height:340px;" class="img-responsive"  altr="Failed Image Loading.."/></center>
+    </div>
+</body>
 </html>
