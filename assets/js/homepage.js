@@ -111,3 +111,12 @@
 
             }
           setInterval(alertboxoff,5000);
+		  
+		  
+		  
+		  function sharewithselectedalbum()
+		  {
+		  
+			window.location = 'uploadgoogledrive.php?albumid='+ checkitem.toString();
+		  
+		  }

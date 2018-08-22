@@ -120,7 +120,7 @@
 				<div class="btn-group" role="group" aria-label="Basic example">
 					<button type="button" class="btn btn-secondary" onclick="createzipwithseletedalbum()"><span class="glyphicon glyphicon-save"></span><span> Download Selected Album</span></button>
 					<button type="button" class="btn btn-secondary"  onclick="createzipwithallalbum()"><span class="glyphicon glyphicon-save"></span><span> Download All Album</span></button>
-					
+					<button type="button" class="btn btn-secondary"  onclick="sharewithselectedalbum()"><span class="glyphicon glyphicon-share"></span><span> Move Selected Album</span></button>
 				</div>
 			</center>
         </div>
