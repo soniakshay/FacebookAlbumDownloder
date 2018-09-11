@@ -7,131 +7,164 @@
 	}
 	if(isset($_GET['albumid']))
 	{
-			// this class use for create zip
-			$zip = new ZipArchive();
-			require_once '../vendor/facebook/autoload.php'; 
-			if(isset($_GET['state'])) {
-
-				$_SESSION['FBRLH_state'] = $_GET['state'];
-			}
-			require_once '../config/config.php';  
-			
-			// add session value into the variable
-			$access_token=$_SESSION['fb_access_token'];
-		   
-		   // zip file name
-		   $zipfilename=rand(1,99999999).rand(1,9999999).rand(1,9999999);
-			
-		   $zip->open('zip/'.$zipfilename.'.zip', ZipArchive::CREATE);
-					
-			// get albumids and create  one array
-		   $albumid1=explode(",",$_GET['albumid']); 
-			
-			foreach($albumid1 as $albumid)
-			{
-					//foldername 
-					$foldername=rand(1,99999999).rand(1,9999999).rand(1,9999999);
-				
-					//crete directory
-					mkdir('files/'.$foldername,0755);
-					$path='files/'.$foldername.'/';
-					
-					//fetch images with album wise
-					$url1="https://graph.facebook.com/v3.1/".$albumid."/photos?fields=images%2Calbum&access_token=".$access_token;
-					$result = file_get_contents($url1);
-					$pic=json_decode($result);
-					$existphotokey=(array)$pic;
-					$nextkeyval=(array)$pic->paging;
-					
-					//paging
-					if(array_key_exists("next",$nextkeyval))
-					{
-							$url1=$nextkeyval["next"];
-					}
-							//fetch all images witb pagging
-							do
-							{            
-									if(array_key_exists("next",$nextkeyval))
-									{
-										$url1=$nextkeyval["next"];
-									}
-									else
-									{
-										$url1="none";
-									}
-									foreach($pic->data as $mydata)
-									{
-										$url = $mydata->images[3]->source;
-										$img = $path.rand(1,9999999).rand(1,99999999).'.jpg';
-										file_put_contents($img, file_get_contents($url));
-										$zip->addFile("{$img}");    
-
-									}       
-									if($url1!="none")
-									{
-										$result = file_get_contents($url1);
-									}
-									$pic=json_decode($result);
-									$existphotokey=(array)$pic;
-									$nextkeyval=(array)$pic->paging;
-
-
-							}while($url1!="none");
-					}
-			$zip->close();
-			
-			$zipfilename=$zipfilename.'.zip';
-			$_SESSION['zipfilename']=$zipfilename;
-
+		$_SESSION['albumid']=$_GET['albumid'];
 	}
 
-	//redirect link for google drive
-	$url_array = explode('?', 'http://'.$_SERVER ['HTTP_HOST'].$_SERVER['REQUEST_URI']);
-	$url = $url_array[0];
 
-	//include google api files
-	require_once '../vendor/google-api-php-client/src/Google_Client.php';
-	require_once '../vendor/google-api-php-client/src/contrib/Google_DriveService.php';
+	$url_array = explode('?', 'http://'.$_SERVER ['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+	require_once '../vendor/googlelib/vendor/autoload.php';
 	$client = new Google_Client(); //create class for google clent
 	$client->setClientId('');//client id
 	$client->setClientSecret('');//clent secret
-	$client->setRedirectUri($url);
+	$client->setRedirectUri($url_array[0]);
+	$client->addScope(Google_Service_Drive::DRIVE);
 	$client->setScopes(array('https://www.googleapis.com/auth/drive'));
+	if(isset($_GET['code']))
+	{
+		$client->authenticate($_GET['code']);
+		$access_token = $client->getAccessToken();
+		$client->setAccessToken($access_token);
 
-	if (isset($_GET['code'])) {
-		// store google drive token in session
-		$_SESSION['accessToken'] = $client->authenticate($_GET['code']); 
-		header('location:'.$url);exit;
-	} elseif (!isset($_SESSION['accessToken'])) { 
-		//if access token is not available then redirect link google drive login
-		$client->authenticate();
 	}
-	
-    $files=array();
-    $files[0]=$_SESSION['zipfilename'];
-    //set access token 
-	$client->setAccessToken($_SESSION['accessToken']);
-   
-	$service = new Google_DriveService($client);
-    $finfo = finfo_open(FILEINFO_MIME_TYPE);
-    $file = new Google_DriveFile();
-	
-    //move album on drive
-	foreach ($files as $file_name) {
-        $file_path = 'zip/'.$file_name;
-        $mime_type = finfo_file($finfo, $file_path);
-		$file->setTitle("FacebookAlbumDownloader".$file_name);
-        $file->setMimeType($mime_type);
-        $service->files->insert(
-            $file,
-            array(
-                'data' => file_get_contents($file_path),
-                'mimeType' => $mime_type
-            )
-        );
-    }
-    finfo_close($finfo);
-    header('Location:home.php?uplodestatus=success');
-	exit;
+	else
+	{
+		$auth_url = $client->createAuthUrl();
+		header('Location: ' . filter_var($auth_url, FILTER_SANITIZE_URL));
+	}
+		
+		$service = new Google_Service_Drive($client);
+		$finfo = finfo_open(FILEINFO_MIME_TYPE);
+		
+		
+		// get all folder name and id of google drive
+		$foldername=array();
+		$folderid=array();
+		$pageToken = null;
+		do {
+				$response = $service->files->listFiles(array(
+				'q' => "mimeType='application/vnd.google-apps.folder' and 'root' in parents and trashed=false",
+				'spaces' => 'drive',
+				'pageToken' => $pageToken,
+				'fields' => 'nextPageToken, files(id, name)',
+			));
+			foreach ($response->files as $file) {
+				array_push($foldername,$file->name);
+				array_push($folderid,$file->id);
+				}
+			
+		
+		} while ($pageToken != null);
+		
+		
+		$foldername_and_id=array_combine($foldername,$folderid); // this array combine all folder name and id of google drive
+		
+		
+		//if check directory name exist or not on google drive if not exist the create directory
+		$file = new Google_Service_Drive_DriveFile();
+		if(in_array("FaceBook Album Downloder",$foldername))
+		{
+			$folderId =$foldername_and_id['FaceBook Album Downloder'] ;
+		
+		}
+		else
+		{
 
+			$fileMetadata = new Google_Service_Drive_DriveFile(array(
+			'name' => 'FaceBook Album Downloder',
+			'mimeType' => 'application/vnd.google-apps.folder'));
+			
+			$file = $service->files->create($fileMetadata, array(
+			'fields' => 'id'));
+
+			$folderId = $file->id;
+		
+		}
+
+
+	
+	//move album to google drive  
+	
+	if(isset($_SESSION['albumid']))
+	{
+        require_once '../vendor/facebook/autoload.php'; 
+        
+        require_once '../config/config.php';    
+        $access_token=$_SESSION['fb_access_token'];// add session value into the variable
+		$albumid1=explode(",",$_SESSION['albumid']); // get albumids and create  one array
+	    
+		
+		foreach($albumid1 as $albumid)
+        {
+
+                $foldername=rand(1,99999999).rand(1,9999999).rand(1,9999999);
+				
+				
+				//create directory on google drive in FaceBook Album Downloder folder
+				$fileMetadata = new Google_Service_Drive_DriveFile(array(
+				'name' => $foldername,
+				'parents' => array($folderId),
+				'mimeType' => 'application/vnd.google-apps.folder'));
+				
+				$file = $service->files->create($fileMetadata, array(
+				'fields' => 'id'));
+				$folderid = $file->id;
+
+				
+				
+				
+				//fetch images with album wise
+                $url1="https://graph.facebook.com/v3.1/".$albumid."/photos?fields=images%2Calbum&access_token=".$access_token;
+                $result = file_get_contents($url1);
+                $pic=json_decode($result);
+                $existphotokey=(array)$pic;
+                $a=(array)$pic->paging;
+                if(array_key_exists("next",$a))
+                {
+                        $url1=$a["next"];
+                }
+                        //fetch all images with pagging
+                        do
+                        {            
+                                if(array_key_exists("next",$a))
+                                {
+                                    $url1=$a["next"];
+                                }
+                                else
+                                {
+                                    $url1="none";
+                                }
+                                foreach($pic->data as $mydata)
+                                {
+                                    $url = $mydata->images[0]->source;
+                                    $img = rand(1,9999999).rand(1,99999999).'.jpg';
+                                    
+									//move images on Album directory
+									$fileMetadata = new Google_Service_Drive_DriveFile(array(
+									'name' => $img,
+									'parents' => array($folderid)
+									));
+									$content = file_get_contents($url);
+									$file = $service->files->create($fileMetadata, array(
+									'data' => $content,
+									'mimeType' => 'image/jpeg',
+									'uploadType' => 'multipart',
+									'fields' => 'id'));	
+
+                                }       
+                                if($url1!="none")
+                                {
+                                    $result = file_get_contents($url1);
+                                }
+                                $pic=json_decode($result);
+                                $existphotokey=(array)$pic;
+                                $a=(array)$pic->paging;
+
+
+                        }while($url1!="none");
+                }
+				
+		}	
+		finfo_close($finfo);
+		header('Location:home.php?uplodestatus=success');
+		exit;
 ?>

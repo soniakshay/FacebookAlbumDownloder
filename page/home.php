@@ -69,9 +69,28 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 		<script src="../assets/js/homepage.js"></script>
-    </head>
+		<script src="../assets/js/slideshow.js"></script>
+	</head>
     <body>
-        <!--navigation-->
+		<!--Image popup div-->
+		<div id="imagepopup">
+			<div id="closebtndiv">
+				<button id="closebtn" onclick="closepopup()">X</button>
+			</div>
+			<div id="lodingicon">
+			</div>
+			<div id="slideshowimage">
+			<center>
+			<div class="btn-group" style="border:1px solid;">
+					<button type="button" class="navbtn btn" onclick="previous()">Previous</button>
+					<button type="button" class="navbtn btn" onclick="autoslideshow()">Auto</button>
+					<button type="button" class="navbtn btn" onclick="next()">Next</button>	
+			</div>
+				<center><img src="" class="img" height="auto" width="350px"  id="imageslideshow"  class="img-responsive">
+				
+			</div>
+		</div>
+		<!--navigation-->
 		<nav class="navbar navbar-default" >
 			<div class="container-fluid">
 				<div class="navbar-header">
@@ -144,7 +163,7 @@
 										 <h4 style="margin-left:10px;"><input type="checkbox"  class="messageCheckbox"  value="<?php echo $mydata->id; ?>" onchange="checkuncheck(this)"><span style="padding-left:10px;"><strong><?php echo $mydata->name; ?></strong></span></h4>
 										  <div id="buttongrp" style="padding-bottom:15px;">
 											   <center>
-												<?php echo "<a href= '#' onClick= openNewWindow('$access_token','$mydata->id');>" ?><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-eye-open "></span><span class="btntext" style="margin-left:5px;">View</span></button></a>
+												<button type="button" class="btn btn-default" onclick="loadslideshow(<?php echo $mydata->id; ?>)"><span class="glyphicon glyphicon-eye-open "></span><span class="btntext" style="margin-left:5px;">View</span></button>
 												<button type="button" class="btn btn-default" onclick="createzip(<?php echo $mydata->id; ?>)"><span class="glyphicon glyphicon-save"></span><span class="btntext" style="margin-left:5px;">Download</span></button>  
 												 <a href="uploadgoogledrive.php?albumid=<?php echo $mydata->id;?>" ><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-share"></span><span class="btntext" style="margin-left:5px;">Share</span></button></a>
 											</div>    

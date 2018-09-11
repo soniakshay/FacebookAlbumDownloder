@@ -37,7 +37,7 @@ if(array_key_exists("next",$a))
                 foreach($pic->data as $mydata)
                 {
 
-                    $str=$mydata->images[1]->source;
+                    $str=$mydata->images[0]->source;
                     
                     $imagelinksarray[]=$str;
                         
@@ -53,43 +53,5 @@ if(array_key_exists("next",$a))
         
         }while($url1!="none");
     
-        
+  echo json_encode($imagelinksarray);      
 ?>
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>Facebook Album Downloader</title>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-		<link rel="stylesheet" href="../assets/css/style.css">
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-		<script>
-			//all imageUrl store php Array to javascript Array
-			
-			var link = new Array();
-			<?php 
-				foreach($imagelinksarray as $val)
-				{ 
-			?>
-					link.push('<?php echo $val; ?>');
-			<?php 
-				} 
-			?>
-		</script>
-		<script src="../assets/js/slideshow.js"></script>
-	</head>
-    <body onload="onloadimage()">
-		<!--navigation button-->
-		<button onclick="previous()" class="slidenavbtn"><</button>
-		<button onclick="next()" class="slidenavbtn" style="left:90%;">></button>
-		
-		<!-- image url holder-->
-		<div class="container">
-			<center><img src="" id="img"  style="height:340px;" class="img-responsive"  altr="Failed Image Loading.."/></center>
-		</div>
-		
-	</body>
-</html>
