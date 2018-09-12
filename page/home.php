@@ -70,6 +70,15 @@
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 		<script src="../assets/js/homepage.js"></script>
 		<script src="../assets/js/slideshow.js"></script>
+		<style>
+		#imageslideshow
+		{
+			height:100%;	
+		}
+
+		</style>
+
+
 	</head>
     <body>
 		<!--Image popup div-->
@@ -86,7 +95,7 @@
 					<button type="button" class="navbtn btn" onclick="autoslideshow()">Auto</button>
 					<button type="button" class="navbtn btn" onclick="next()">Next</button>	
 			</div>
-				<center><img src="" class="img" height="auto" width="350px"  id="imageslideshow"  class="img-responsive">
+				<center><img src=""    id="imageslideshow"  class="img-responsive">
 				
 			</div>
 		</div>
